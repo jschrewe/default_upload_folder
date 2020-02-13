@@ -25,13 +25,20 @@ class DefaultUploadFolder {
      * @param BackendUserAuthentication $backendUserAuthentication
      * @return Folder
      */
-    public function getDefaultUploadFolder($params, BackendUserAuthentication $backendUserAuthentication) {
-        $siteFinder = new SiteFinder();
-        $site = $siteFinder->getSiteByPageId($params['pid']);
-        try {
-            $uploadFolder = $site->getAttribute('defaultStorage');
+    public function getDefaultStorage($params, BackendUserAuthentication $backendUserAuthentication) {
+      \TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($params);
+      $siteFinder = new SiteFinder();
+      $site = $siteFinder->getSiteByPageId($params['pid']);
+      try {
+          $storage = $site->getAttribute('defaultStorageUid');
+      } catch (\InvalidArgumentException $e) {
+      $resourceFactory = \TYPO3\CMS\Core\Resource\ResourceFactory::getInstance();
+      $storage = $resourceFactory->getDefaultStorage();
+    }
+
+
             \TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($uploadFolder);
-        } catch (\InvalidArgumentException $e) {
+
             /** @var Folder $uploadFolder */
             $uploadFolder = $params['uploadFolder'];
             $table = $params['table'];
