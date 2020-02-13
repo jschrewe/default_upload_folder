@@ -1,5 +1,6 @@
 <?php
-namespace BeechIt\DefaultUploadFolder\Hooks;
+namespace Kooperationsstelle\DefaultUploadFolder\Hooks;
+
 /*
  * This source file is proprietary property of Beech Applications B.V.
  * Date: 06-04-2016
@@ -11,13 +12,12 @@ use TYPO3\CMS\Core\Resource\Exception\FolderDoesNotExistException;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+use TYPO3\CMS\Core\Site\SiteFinder;
 
 /**
  * Class DefaultUploadFolder
  */
-class DefaultUploadFolder
-{
-
+class DefaultUploadFolder {
     /**
      * Get default upload folder
      *
@@ -25,28 +25,34 @@ class DefaultUploadFolder
      * @param BackendUserAuthentication $backendUserAuthentication
      * @return Folder
      */
-    public function getDefaultUploadFolder($params, BackendUserAuthentication $backendUserAuthentication)
-    {
-        /** @var Folder $uploadFolder */
-        $uploadFolder = $params['uploadFolder'];
-        $table = $params['table'];
-        $field = $params['field'];
-        $pageTs = BackendUtility::getPagesTSconfig($params['pid']);
-        $subFolder = $backendUserAuthentication->getTSConfig(
-            'default_upload_folders.' . $table . '.' . $field,
-            $pageTs
-        );
-        if ($subFolder['value'] === null) {
+    public function getDefaultUploadFolder($params, BackendUserAuthentication $backendUserAuthentication) {
+        $siteFinder = new SiteFinder();
+        $site = $siteFinder->getSiteByPageId($params['pid']);
+        try {
+            $uploadFolder = $site->getAttribute('defaultStorage');
+        } catch (\InvalidArgumentException $e) {
+            /** @var Folder $uploadFolder */
+            $uploadFolder = $params['uploadFolder'];
+            $table = $params['table'];
+            $field = $params['field'];
+            $pageTs = BackendUtility::getPagesTSconfig($params['pid']);
+
             $subFolder = $backendUserAuthentication->getTSConfig(
-                'default_upload_folders.' . $table,
+                'default_upload_folders.' . $table . '.' . $field,
                 $pageTs
             );
-        }
-        if ($subFolder['value'] === null) {
-            $subFolder = $backendUserAuthentication->getTSConfig(
-                'default_upload_folders.defaultForAllTables',
-                $pageTs
-            );
+            if ($subFolder['value'] === null) {
+                $subFolder = $backendUserAuthentication->getTSConfig(
+                    'default_upload_folders.' . $table,
+                    $pageTs
+                );
+            }
+            if ($subFolder['value'] === null) {
+                $subFolder = $backendUserAuthentication->getTSConfig(
+                    'default_upload_folders.defaultForAllTables',
+                    $pageTs
+                );
+            }
         }
 
         // Folder by combined identifier

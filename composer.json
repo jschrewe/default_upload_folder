@@ -1,5 +1,5 @@
 {
-	"name": "beechit/default-upload-folder",
+	"name": "kooperationsstelle/default-upload-folder",
 	"type": "typo3-cms-extension",
 	"description": "Make it possible to configure the default upload folder for a certain TCA column",
 	"license": ["GPL-2.0+"],
