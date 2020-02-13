@@ -61,7 +61,7 @@ class DefaultUploadFolder {
                     $pageTs
                 );
             }
-        }
+
 
         // Folder by combined identifier
         if (preg_match('/[0-9]+:/', $subFolder['value'])) {
