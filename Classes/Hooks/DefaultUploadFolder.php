@@ -30,6 +30,7 @@ class DefaultUploadFolder {
         $site = $siteFinder->getSiteByPageId($params['pid']);
         try {
             $uploadFolder = $site->getAttribute('defaultStorage');
+            \TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($uploadFolder);
         } catch (\InvalidArgumentException $e) {
             /** @var Folder $uploadFolder */
             $uploadFolder = $params['uploadFolder'];
