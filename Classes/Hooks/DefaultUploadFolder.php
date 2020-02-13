@@ -25,7 +25,7 @@ class DefaultUploadFolder {
      * @param BackendUserAuthentication $backendUserAuthentication
      * @return Folder
      */
-    public function getDefaultStorage($params, BackendUserAuthentication $backendUserAuthentication) {
+    public function getDefaultUploadFolder($params, BackendUserAuthentication $backendUserAuthentication) {
       \TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($params);
       $siteFinder = new SiteFinder();
       $site = $siteFinder->getSiteByPageId($params['pid']);
